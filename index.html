@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINONE | Broodmother God</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-core: #050505;
+            --accent-glow: #ff1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --glass-bg: rgba(15, 15, 15, 0.85); 
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --blur-strength: 20px;
+            --blood-shadow: 0 0 15px rgba(255, 26, 26, 0.7);
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+        body {
+            background-color: var(--bg-core);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; }
+        .bg-image { 
+            width: 100%; height: 100%; 
+            background-image: url('Gemini_Generated_Image_jm8c6yjm8c6yjm8c.png'); 
+            background-size: cover; background-position: center;
+            animation: ambientZoom 45s ease-in-out infinite alternate;
+            filter: brightness(0.4) saturate(1.2); 
+        }
+        @keyframes ambientZoom { 0% { transform: scale(1.05); } 100% { transform: scale(1.2); } }
+        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at center, rgba(5,5,5,0.2) 0%, rgba(0,0,0,0.9) 90%); }
+
+        .wrapper { width: 100%; max-width: 1000px; padding: 4rem 1rem; display: flex; flex-direction: column; gap: 2.5rem; z-index: 1; }
+
+        header { text-align: center; }
+        h1 { font-size: clamp(3rem, 8vw, 5rem); margin: 0; text-shadow: var(--blood-shadow); letter-spacing: -2px; text-transform: uppercase; font-weight: 800; }
+        .tagline { color: var(--accent-glow); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 10px; font-size: 0.8rem; }
+
+        .glass-card { position: relative; background: var(--glass-bg); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; overflow: hidden; }
+        .glass-card:hover { border-color: var(--accent-glow); }
+
+        .achievements-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
+        .stat-block h3 { font-size: 2.5rem; font-weight: 800; margin: 0; color: var(--accent-glow); text-shadow: var(--blood-shadow); }
+        .stat-block p { margin: 0.5rem 0 0 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; font-weight: 600; }
+
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .blood-title { color: #fff; text-shadow: var(--blood-shadow); text-transform: uppercase; font-size: 1.1rem; margin-bottom: 1rem; display: block; font-weight: 800; }
+
+        #mines-board { display: grid; grid-template-columns: repeat(5, 45px); gap: 6px; justify-content: center; margin: 15px 0; }
+        .cell { width: 45px; height: 45px; background: #1a1a1a; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; border: 1px solid #333; font-weight: 800; color: #fff; }
+        .cell.revealed { background: #252525; border-color: #444; cursor: default; }
+        .cell.mine { background: #ff1a1a !important; box-shadow: 0 0 15px #ff1a1a; }
+        .cell.n1 { color: #4b69ff; } .cell.n2 { color: #ade55c; } .cell.n3 { color: #ff1a1a; }
+        #mines-msg { font-weight: 800; height: 20px; color: var(--accent-glow); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
+
+        #ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 180px; margin: 15px auto; }
+        .ttt-cell { aspect-ratio: 1/1; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; cursor: pointer; border: 1px solid #333; color: #fff; }
+
+        .case-window { width: 100%; height: 90px; border: 1px solid var(--glass-border); margin: 15px 0; position: relative; overflow: hidden; background: #000; border-radius: 12px; }
+        .case-line { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: var(--accent-glow); z-index: 5; box-shadow: 0 0 10px var(--accent-glow); }
+        .case-strip { display: flex; position: absolute; left: 0; top: 5px; height: 80px; }
+        .skin-item { min-width: 80px; height: 80px; margin: 0 5px; background: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; border-radius: 8px; border-bottom: 3px solid #444; color: #fff; }
+        
+        .btn { background: rgba(255,26,26,0.1); border: 1px solid var(--accent-glow); color: #fff; padding: 12px; border-radius: 10px; cursor: pointer; text-transform: uppercase; font-weight: 800; width: 100%; margin-top: 10px; font-size: 0.8rem; }
+        .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; background: none; }
+        .btn:hover:not(:disabled) { background: var(--accent-glow); box-shadow: var(--blood-shadow); }
+        #claim-btn { background: #ade55c; color: #000; border: none; margin-top: 10px; display: none; box-shadow: 0 0 15px rgba(173, 229, 92, 0.4); }
+
+        .grid-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .link-card { text-decoration: none; }
+        .link-card h3 { margin: 0; font-size: 1.5rem; color: #fff; }
+        .link-card p { margin: 10px 0 0 0; color: var(--text-secondary); line-height: 1.4; font-size: 0.9rem; }
+
+        /* Иконка громкости */
+        .audio-control { position: fixed; bottom: 20px; right: 20px; z-index: 100; background: var(--glass-bg); border: 1px solid var(--accent-glow); padding: 10px; border-radius: 50%; cursor: pointer; }
+    </style>
+</head>
+<body onclick="startMusic()">
+
+    <div class="bg-container"><div class="bg-image"></div></div>
+    <div class="bg-overlay"></div>
+
+    <audio id="bg-music" loop>
+        <source src="playboy_carti_x_luffy_-_ghostface_77585670.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-spin">
+        <source src="https://actions.google.com/sounds/v1/science_fiction/typing_fast.ogg" type="audio/mpeg">
+    </audio>
+    <audio id="sound-win">
+        <source src="https://actions.google.com/sounds/v1/cartoon/clime_up_reverb_fast.ogg" type="audio/mpeg">
+    </audio>
+    <audio id="sound-lose">
+        <source src="https://actions.google.com/sounds/v1/foley/explosion.ogg" type="audio/mpeg">
+    </audio>
+
+    <main class="wrapper">
+        <header>
+            <h1>LINONE</h1>
+            <p class="tagline">GENIUS Midlaner • Broodmother Spammer</p>
+        </header>
+
+        <section class="glass-card">
+            <div class="achievements-content">
+                <div class="stat-block"><h3>16.700</h3><p>Current MMR</p></div>
+                <div class="stat-block"><h3>#12</h3><p>EU buster</p></div>
+                <div class="stat-block"><h3>9.8K+</h3><p>Brood Games</p></div>
+            </div>
+        </section>
+
+        <div class="games-grid">
+            <div class="glass-card" style="text-align: center;">
+                <span class="blood-title">Dota 2 Chest</span>
+                <div class="case-window">
+                    <div class="case-line"></div>
+                    <div id="case-strip" class="case-strip"></div>
+                </div>
+                <button id="spin-btn" class="btn" onclick="spinCase()">Открыть кейс</button>
+                <button id="claim-btn" class="btn" onclick="claimPrize()">ЗАБРАТЬ ПОДАРОК</button>
+                <p id="timer-text" style="font-size: 11px; color: #555; margin-top: 10px;"></p>
+            </div>
+
+            <div class="glass-card" style="text-align: center;">
+                <span class="blood-title">Web Mines</span>
+                <div id="mines-msg"></div>
+                <div id="mines-board"></div>
+                <button class="btn" onclick="initMines()">Reset Game</button>
+            </div>
+
+            <div class="glass-card" style="text-align: center;">
+                <span class="blood-title">Spider Tic-Tac</span>
+                <div id="ttt-board"></div>
+                <p id="ttt-status" style="font-size: 12px; font-weight: 800; color: var(--accent-glow);">Ваш ход (X)</p>
+                <button class="btn" onclick="resetTTT()">Reset Game</button>
+            </div>
+        </div>
+
+        <nav class="grid-links">
+            <a href="https://www.twitch.tv/linoneee" target="_blank" class="glass-card link-card">
+                <h3>Twitch</h3>
+                <p>Цель: эфиры каждый день!<br>Реализация: К сожалению...</p>
+            </a>
+            <a href="https://t.me/linoneee" target="_blank" class="glass-card link-card">
+                <h3>Telegram</h3>
+                <p>Анонсы и мысли по мете пикапа</p>
+            </a>
+            <a href="https://www.youtube.com/@linoneeee" target="_blank" class="glass-card link-card">
+                <h3>YouTube</h3>
+                <p>Гайды по пикапу</p>
+            </a>
+        </nav>
+    </main>
+
+    <script>
+        // --- ЗВУКОВОЙ ДВИЖОК ---
+        const music = document.getElementById('bg-music');
+        const sWin = document.getElementById('sound-win');
+        const sLose = document.getElementById('sound-lose');
+        const sSpin = document.getElementById('sound-spin');
+        
+        let musicStarted = false;
+        function startMusic() {
+            if(!musicStarted) {
+                music.volume = 0.02; // Негромко
+                music.play();
+                musicStarted = true;
+            }
+        }
+
+        function playWin() { sWin.currentTime = 0; sWin.play(); }
+        function playLose() { sLose.currentTime = 0; sLose.play(); }
+
+        // --- КАЗИНО ---
+        const skins = [
+            {n: "Common BZZ", c: "#b0c3d9"}, {n: "Rare Blade", c: "#4b69ff"},
+            {n: "Mythical Axe", c: "#8847ff"}, {n: "Legendary Bow", c: "#d32ce6"},
+            {n: "ARCANA SF", c: "#ade55c"}, {n: "DC HOOK", c: "#eb4b4b"}
+        ];
+
+        function updateTimer() {
+            const lastSpin = localStorage.getItem('lastSpin');
+            const btn = document.getElementById('spin-btn');
+            const timerText = document.getElementById('timer-text');
+            if (lastSpin) {
+                const timeLeft = 30 * 60 * 1000 - (Date.now() - lastSpin);
+                if (timeLeft > 0) {
+                    btn.disabled = true;
+                    const m = Math.floor(timeLeft/60000);
+                    const s = Math.floor((timeLeft%60000)/1000);
+                    timerText.innerText = `Доступно через: ${m}м ${s}с`;
+                    return;
+                }
+            }
+            btn.disabled = false;
+            timerText.innerText = "Кейс готов к открытию!";
+        }
+
+        function spinCase() {
+            const strip = document.getElementById('case-strip');
+            localStorage.setItem('lastSpin', Date.now());
+            strip.innerHTML = "";
+            for(let i=0; i<40; i++) {
+                const s = skins[Math.floor(Math.random()*skins.length)];
+                const div = document.createElement('div');
+                div.className = 'skin-item';
+                div.style.borderBottomColor = s.c;
+                div.innerHTML = `<span style="color:${s.c}; font-size:20px;">★</span><br>${s.n}`;
+                strip.appendChild(div);
+            }
+            strip.style.transition = "none";
+            strip.style.transform = "translateX(0)";
+            
+            sSpin.loop = true;
+            sSpin.play(); // Звук кручения
+
+            setTimeout(() => {
+                strip.style.transition = "transform 4s cubic-bezier(0.15, 0, 0.15, 1)";
+                strip.style.transform = `translateX(-${2800 + Math.random() * 200}px)`;
+                setTimeout(() => { 
+                    sSpin.pause();
+                    playWin(); // Звук выигрыша
+                    document.getElementById('claim-btn').style.display = "block"; 
+                    updateTimer();
+                }, 4100);
+            }, 50);
+        }
+
+        function claimPrize() {
+            window.open("https://t.me/linoneee", "_blank");
+            document.getElementById('claim-btn').style.display = "none";
+        }
+
+        // --- САПЕР ---
+        let minePositions = [];
+        let minesGameOver = false;
+
+        function initMines() {
+            const board = document.getElementById('mines-board');
+            const msg = document.getElementById('mines-msg');
+            board.innerHTML = "";
+            msg.innerText = "";
+            minesGameOver = false;
+            minePositions = [];
+            let placed = 0;
+            while(placed < 3) {
+                let idx = Math.floor(Math.random()*25);
+                if(!minePositions.includes(idx)) { minePositions.push(idx); placed++; }
+            }
+            for(let i=0; i<25; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.id = `mine-${i}`;
+                cell.onclick = () => revealMine(i);
+                board.appendChild(cell);
+            }
+        }
+
+        function revealMine(idx) {
+            if(minesGameOver) return;
+            const cell = document.getElementById(`mine-${idx}`);
+            if(cell.classList.contains('revealed')) return;
+
+            if(minePositions.includes(idx)) {
+                cell.classList.add('mine');
+                cell.innerText = "💣";
+                document.getElementById('mines-msg').innerText = "ПОТРАЧЕНО!";
+                minesGameOver = true;
+                playLose(); // Звук проигрыша
+                return;
+            }
+
+            let count = 0;
+            const x = idx % 5;
+            const y = Math.floor(idx / 5);
+            for(let i=-1; i<=1; i++) {
+                for(let j=-1; j<=1; j++) {
+                    let nx = x + i, ny = y + j;
+                    if(nx >= 0 && nx < 5 && ny >= 0 && ny < 5) {
+                        if(minePositions.includes(ny * 5 + nx)) count++;
+                    }
+                }
+            }
+
+            cell.classList.add('revealed');
+            if(count > 0) {
+                cell.innerText = count;
+                cell.classList.add(`n${count}`);
+            } else {
+                cell.innerText = "🕷️";
+                for(let i=-1; i<=1; i++) {
+                    for(let j=-1; j<=1; j++) {
+                        let nx = x + i, ny = y + j;
+                        if(nx >= 0 && nx < 5 && ny >= 0 && ny < 5) revealMine(ny * 5 + nx);
+                    }
+                }
+            }
+        }
+
+        // --- КРЕСТИКИ НОЛИКИ ---
+        let tttState = ["","","","","","","","",""];
+        let tttIsActive = true;
+
+        function resetTTT() {
+            tttState = ["","","","","","","","",""];
+            tttIsActive = true;
+            document.getElementById('ttt-status').innerText = "Ваш ход (X)";
+            renderTTT();
+        }
+
+        function checkWinner(st) {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for(let w of wins) {
+                if(st[w[0]] && st[w[0]]===st[w[1]] && st[w[0]]===st[w[2]]) return st[w[0]];
+            }
+            return st.includes("") ? null : "Ничья";
+        }
+
+        function renderTTT() {
+            const board = document.getElementById('ttt-board');
+            board.innerHTML = "";
+            tttState.forEach((val, i) => {
+                const d = document.createElement('div');
+                d.className = 'ttt-cell';
+                d.innerText = val;
+                d.onclick = () => {
+                    if(tttIsActive && tttState[i]==="") {
+                        tttState[i] = "X";
+                        renderTTT();
+                        let res = checkWinner(tttState);
+                        if(res) { endTTT(res); } 
+                        else {
+                            tttIsActive = false;
+                            document.getElementById('ttt-status').innerText = "Бот думает...";
+                            setTimeout(botMove, 600);
+                        }
+                    }
+                };
+                board.appendChild(d);
+            });
+        }
+
+        function botMove() {
+            let empty = tttState.map((v,i) => v===""?i:null).filter(x=>x!==null);
+            if(empty.length > 0) {
+                tttState[empty[Math.floor(Math.random()*empty.length)]] = "O";
+                renderTTT();
+                let res = checkWinner(tttState);
+                if(res) endTTT(res);
+                else { tttIsActive = true; document.getElementById('ttt-status').innerText = "Ваш ход (X)"; }
+            }
+        }
+
+        function endTTT(res) {
+            tttIsActive = false;
+            const s = document.getElementById('ttt-status');
+            if(res === "X") { s.innerText = "ВЫ ВЫИГРАЛИ!"; playWin(); }
+            else if(res === "O") { s.innerText = "БОТ ВЫИГРАЛ!"; playLose(); }
+            else s.innerText = "НИЧЬЯ!";
+        }
+
+        setInterval(updateTimer, 1000);
+        initMines(); resetTTT(); updateTimer();
+    </script>
+</body>
+</html>
