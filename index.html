@@ -12,99 +12,123 @@
             --accent-glow: #ff1a1a;
             --text-primary: #ffffff;
             --text-secondary: #aaaaaa;
-            --glass-bg: rgba(15, 15, 15, 0.85); 
+            --glass-bg: rgba(15, 15, 15, 0.9); 
             --glass-border: rgba(255, 255, 255, 0.08);
-            --blur-strength: 20px;
+            --blur-strength: 15px;
             --blood-shadow: 0 0 15px rgba(255, 26, 26, 0.7);
+            
+            --color-tw: #9146ff;
+            --color-tg: #0088cc;
+            --color-bs: #f57b00;
+            --color-yt: #ff0000;
+            --color-ds: #5865F2;
         }
 
-        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: url('https://cur.cursors-4u.net/games/gam-4/gam383.cur'), auto; }
+        body { background-color: var(--bg-core); color: var(--text-primary); font-family: 'Montserrat', sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg-core);
-            color: var(--text-primary);
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
+        /* --- ЭФФЕКТ КЛИКА --- */
+        .click-ripple {
+            position: fixed; width: 40px; height: 40px; background: rgba(255, 26, 26, 0.4);
+            border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.6s ease-out; z-index: 9999;
         }
+        @keyframes ripple { to { transform: translate(-50%, -50%) scale(2.5); opacity: 0; } }
 
+        /* --- КОНФЕТТИ --- */
+        .particle { position: fixed; pointer-events: none; z-index: 999; }
+
+        /* --- ФОН --- */
         .bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; }
-        .bg-image { 
-            width: 100%; height: 100%; 
-            background-image: url('Gemini_Generated_Image_jm8c6yjm8c6yjm8c.png'); 
-            background-size: cover; background-position: center;
-            animation: ambientZoom 45s ease-in-out infinite alternate;
-            filter: brightness(0.4) saturate(1.2); 
-        }
+        .bg-image { width: 100%; height: 100%; background-image: url('Gemini_Generated_Image_jm8c6yjm8c6yjm8c.png'); background-size: cover; background-position: center; animation: ambientZoom 45s ease-in-out infinite alternate; filter: brightness(0.4); }
         @keyframes ambientZoom { 0% { transform: scale(1.05); } 100% { transform: scale(1.2); } }
         .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: radial-gradient(circle at center, rgba(5,5,5,0.2) 0%, rgba(0,0,0,0.9) 90%); }
 
-        .wrapper { width: 100%; max-width: 1000px; padding: 4rem 1rem; display: flex; flex-direction: column; gap: 2.5rem; z-index: 1; }
+        /* --- ПЛЕЕР СЛЕВА --- */
+        .music-player-panel {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 60px; padding: 20px 10px; background: var(--glass-bg); 
+            border: 1px solid var(--accent-glow); border-radius: 50px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 100;
+            box-shadow: var(--blood-shadow); backdrop-filter: blur(10px);
+        }
+        .music-btn { background: none; border: none; color: #fff; font-size: 1.2rem; }
+        .vol-slider { writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 8px; height: 100px; background: #333; outline: none; }
+        .equalizer { display: flex; align-items: flex-end; gap: 2px; height: 20px; }
+        .eq-bar { width: 3px; background: var(--accent-glow); animation: eq 0.5s infinite alternate; }
+        .paused .eq-bar { animation-play-state: paused; height: 3px; }
+        @keyframes eq { 0% { height: 5px; } 100% { height: 18px; } }
 
+        /* --- КОНТЕНТ --- */
+        .wrapper { width: 100%; max-width: 1000px; padding: 4rem 1rem; display: flex; flex-direction: column; gap: 2.5rem; z-index: 1; }
         header { text-align: center; }
-        h1 { font-size: clamp(3rem, 8vw, 5rem); margin: 0; text-shadow: var(--blood-shadow); letter-spacing: -2px; text-transform: uppercase; font-weight: 800; }
+        h1 { font-size: clamp(3rem, 8vw, 5rem); margin: 0; text-shadow: var(--blood-shadow); letter-spacing: -2px; font-weight: 800; }
         .tagline { color: var(--accent-glow); letter-spacing: 5px; font-weight: 800; text-transform: uppercase; margin-top: 10px; font-size: 0.8rem; }
 
-        .glass-card { position: relative; background: var(--glass-bg); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; overflow: hidden; }
-        .glass-card:hover { border-color: var(--accent-glow); }
-
+        .glass-card { position: relative; background: var(--glass-bg); backdrop-filter: blur(var(--blur-strength)); border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; }
+        
+        /* Stats */
         .achievements-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; }
         .stat-block h3 { font-size: 2.5rem; font-weight: 800; margin: 0; color: var(--accent-glow); text-shadow: var(--blood-shadow); }
-        .stat-block p { margin: 0.5rem 0 0 0; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; font-weight: 600; }
+        .stat-block p { color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; font-weight: 600; }
 
+        /* Games */
         .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
         .blood-title { color: #fff; text-shadow: var(--blood-shadow); text-transform: uppercase; font-size: 1.1rem; margin-bottom: 1rem; display: block; font-weight: 800; }
 
+        /* Игры стили */
         #mines-board { display: grid; grid-template-columns: repeat(5, 45px); gap: 6px; justify-content: center; margin: 15px 0; }
-        .cell { width: 45px; height: 45px; background: #1a1a1a; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; border: 1px solid #333; font-weight: 800; color: #fff; }
-        .cell.revealed { background: #252525; border-color: #444; cursor: default; }
-        .cell.mine { background: #ff1a1a !important; box-shadow: 0 0 15px #ff1a1a; }
-        .cell.n1 { color: #4b69ff; } .cell.n2 { color: #ade55c; } .cell.n3 { color: #ff1a1a; }
-        #mines-msg { font-weight: 800; height: 20px; color: var(--accent-glow); margin-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; }
-
+        .cell { width: 45px; height: 45px; background: #1a1a1a; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: 1px solid #333; font-weight: 800; color: #fff;}
+        .cell.revealed { background: #252525; }
+        .cell.mine { background: var(--accent-glow) !important; box-shadow: var(--blood-shadow); }
         #ttt-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 180px; margin: 15px auto; }
-        .ttt-cell { aspect-ratio: 1/1; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; cursor: pointer; border: 1px solid #333; color: #fff; }
-
+        .ttt-cell { aspect-ratio: 1/1; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; border: 1px solid #333; color: #fff;}
         .case-window { width: 100%; height: 90px; border: 1px solid var(--glass-border); margin: 15px 0; position: relative; overflow: hidden; background: #000; border-radius: 12px; }
-        .case-line { position: absolute; left: 50%; top: 0; width: 2px; height: 100%; background: var(--accent-glow); z-index: 5; box-shadow: 0 0 10px var(--accent-glow); }
         .case-strip { display: flex; position: absolute; left: 0; top: 5px; height: 80px; }
-        .skin-item { min-width: 80px; height: 80px; margin: 0 5px; background: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; border-radius: 8px; border-bottom: 3px solid #444; color: #fff; }
-        
-        .btn { background: rgba(255,26,26,0.1); border: 1px solid var(--accent-glow); color: #fff; padding: 12px; border-radius: 10px; cursor: pointer; text-transform: uppercase; font-weight: 800; width: 100%; margin-top: 10px; font-size: 0.8rem; }
-        .btn:disabled { border-color: #444; color: #666; cursor: not-allowed; background: none; }
+        .skin-item { min-width: 80px; height: 80px; margin: 0 5px; background: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; border-radius: 8px; border-bottom: 3px solid #444; color: #fff;}
+
+        /* Кнопки */
+        .btn { background: rgba(255,26,26,0.1); border: 1px solid var(--accent-glow); color: #fff; padding: 12px; border-radius: 10px; text-transform: uppercase; font-weight: 800; width: 100%; margin-top: 10px; font-size: 0.8rem; }
         .btn:hover:not(:disabled) { background: var(--accent-glow); box-shadow: var(--blood-shadow); }
-        #claim-btn { background: #ade55c; color: #000; border: none; margin-top: 10px; display: none; box-shadow: 0 0 15px rgba(173, 229, 92, 0.4); }
+        #claim-btn { background: #ade55c; color: #000; border: none; display: none; }
 
-        .grid-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .link-card { text-decoration: none; }
-        .link-card h3 { margin: 0; font-size: 1.5rem; color: #fff; }
-        .link-card p { margin: 10px 0 0 0; color: var(--text-secondary); line-height: 1.4; font-size: 0.9rem; }
+        /* --- TWITCH LIVE STATUS --- */
+        .card-tw.is-live { border-color: var(--color-tw); animation: twitchPulse 1.5s infinite; }
+        .live-indicator { display: none; background: #ff4e4e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; vertical-align: middle; margin-left: 5px; }
+        .is-live .live-indicator { display: inline-block; animation: blink 1s infinite; }
+        @keyframes twitchPulse { 0% { box-shadow: 0 0 5px var(--color-tw); } 50% { box-shadow: 0 0 20px var(--color-tw); } 100% { box-shadow: 0 0 5px var(--color-tw); } }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        /* Иконка громкости */
-        .audio-control { position: fixed; bottom: 20px; right: 20px; z-index: 100; background: var(--glass-bg); border: 1px solid var(--accent-glow); padding: 10px; border-radius: 50%; cursor: pointer; }
+        /* Карточки соцсетей */
+        .grid-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+        .link-card { text-decoration: none; text-align: center; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; position: relative;}
+        .link-card h3 { margin: 0; font-size: 1.1rem; }
+        .link-card p { margin: 5px 0 0 0; color: var(--text-secondary); font-size: 0.8rem; }
+        
+        .card-tw h3 { color: var(--color-tw); } .card-tw:hover { border-color: var(--color-tw); }
+        .card-tg h3 { color: var(--color-tg); } .card-tg:hover { border-color: var(--color-tg); }
+        .card-bs h3 { color: var(--color-bs); } .card-bs:hover { border-color: var(--color-bs); }
+        .card-ds h3 { color: var(--color-ds); } .card-ds:hover { border-color: var(--color-ds); }
+        .card-yt h3 { color: var(--color-yt); } .card-yt:hover { border-color: var(--color-yt); }
     </style>
 </head>
-<body onclick="startMusic()">
+<body onclick="handleGlobalClick(event)">
 
     <div class="bg-container"><div class="bg-image"></div></div>
     <div class="bg-overlay"></div>
 
-    <audio id="bg-music" loop>
-        <source src="playboy_carti_x_luffy_-_ghostface_77585670.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="sound-spin">
-        <source src="https://actions.google.com/sounds/v1/science_fiction/typing_fast.ogg" type="audio/mpeg">
-    </audio>
-    <audio id="sound-win">
-        <source src="https://actions.google.com/sounds/v1/cartoon/clime_up_reverb_fast.ogg" type="audio/mpeg">
-    </audio>
-    <audio id="sound-lose">
-        <source src="https://actions.google.com/sounds/v1/foley/explosion.ogg" type="audio/mpeg">
-    </audio>
+    <div class="music-player-panel" id="player-ui">
+        <div class="equalizer" id="eq">
+            <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        </div>
+        <button class="music-btn" onclick="togglePlay()" id="play-pause">⏸</button>
+        <input type="range" class="vol-slider" id="vol" min="0" max="1" step="0.01" value="0.3" oninput="changeVol(this.value)">
+    </div>
+
+    <audio id="bg-music" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+    <audio id="s-win"><source src="https://actions.google.com/sounds/v1/cartoon/clime_up_reverb_fast.ogg"></audio>
+    <audio id="s-lose"><source src="https://actions.google.com/sounds/v1/foley/explosion.ogg"></audio>
+    <audio id="s-spin"><source src="https://actions.google.com/sounds/v1/science_fiction/typing_fast.ogg"></audio>
 
     <main class="wrapper">
         <header>
@@ -123,40 +147,43 @@
         <div class="games-grid">
             <div class="glass-card" style="text-align: center;">
                 <span class="blood-title">Dota 2 Chest</span>
-                <div class="case-window">
-                    <div class="case-line"></div>
-                    <div id="case-strip" class="case-strip"></div>
-                </div>
+                <div class="case-window"><div id="case-strip" class="case-strip"></div></div>
                 <button id="spin-btn" class="btn" onclick="spinCase()">Открыть кейс</button>
                 <button id="claim-btn" class="btn" onclick="claimPrize()">ЗАБРАТЬ ПОДАРОК</button>
-                <p id="timer-text" style="font-size: 11px; color: #555; margin-top: 10px;"></p>
+                <p id="timer-text" style="font-size: 11px; color: #555; margin-top: 5px;"></p>
             </div>
-
             <div class="glass-card" style="text-align: center;">
                 <span class="blood-title">Web Mines</span>
                 <div id="mines-msg"></div>
                 <div id="mines-board"></div>
-                <button class="btn" onclick="initMines()">Reset Game</button>
+                <button class="btn" onclick="initMines()">Reset</button>
             </div>
-
             <div class="glass-card" style="text-align: center;">
                 <span class="blood-title">Spider Tic-Tac</span>
                 <div id="ttt-board"></div>
-                <p id="ttt-status" style="font-size: 12px; font-weight: 800; color: var(--accent-glow);">Ваш ход (X)</p>
-                <button class="btn" onclick="resetTTT()">Reset Game</button>
+                <p id="ttt-status" style="font-size: 12px; color: var(--accent-glow); font-weight: 800;">Ход (X)</p>
+                <button class="btn" onclick="resetTTT()">Reset</button>
             </div>
         </div>
 
         <nav class="grid-links">
-            <a href="https://www.twitch.tv/linoneee" target="_blank" class="glass-card link-card">
-                <h3>Twitch</h3>
-                <p>Цель: эфиры каждый день!<br>Реализация: К сожалению...</p>
+            <a href="https://www.twitch.tv/linoneee" id="twitch-card" target="_blank" class="glass-card link-card card-tw">
+                <h3>Twitch <span class="live-indicator">LIVE</span></h3>
+                <p id="tw-text">Стримы каждый день</p>
             </a>
-            <a href="https://t.me/linoneee" target="_blank" class="glass-card link-card">
+            <a href="https://t.me/linoneee" target="_blank" class="glass-card link-card card-tg">
                 <h3>Telegram</h3>
-                <p>Анонсы и мысли по мете пикапа</p>
+                <p>Мысли и анонсы</p>
             </a>
-            <a href="https://www.youtube.com/@linoneeee" target="_blank" class="glass-card link-card">
+            <a href="https://boosty.to/linone" target="_blank" class="glass-card link-card card-bs">
+                <h3>Boosty</h3>
+                <p>Эксклюзивный контент</p>
+            </a>
+            <a href="https://discord.gg/mANHWTECPu" target="_blank" class="glass-card link-card card-ds">
+                <h3>Discord</h3>
+                <p>Тянки тут</p>
+            </a>
+            <a href="https://www.youtube.com/@linoneeee" target="_blank" class="glass-card link-card card-yt">
                 <h3>YouTube</h3>
                 <p>Гайды по пикапу</p>
             </a>
@@ -164,49 +191,66 @@
     </main>
 
     <script>
-        // --- ЗВУКОВОЙ ДВИЖОК ---
-        const music = document.getElementById('bg-music');
-        const sWin = document.getElementById('sound-win');
-        const sLose = document.getElementById('sound-lose');
-        const sSpin = document.getElementById('sound-spin');
-        
-        let musicStarted = false;
-        function startMusic() {
-            if(!musicStarted) {
-                music.volume = 0.02; // Негромко
-                music.play();
-                musicStarted = true;
+        // --- ЭФФЕКТЫ ---
+        function handleGlobalClick(e) {
+            startFirstTime();
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = `${e.clientX}px`;
+            ripple.style.top = `${e.clientY}px`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function spawnConfetti() {
+            for(let i=0; i<30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.width = p.style.height = Math.random()*10+5+'px';
+                p.style.background = `hsl(${Math.random()*20}, 100%, 50%)`;
+                p.style.left = Math.random()*100+'vw';
+                p.style.top = '-10px';
+                p.style.boxShadow = '0 0 10px red';
+                document.body.appendChild(p);
+                
+                const anim = p.animate([
+                    { transform: 'translateY(0) rotate(0)', opacity: 1 },
+                    { transform: `translateY(100vh) translateX(${Math.random()*200-100}px) rotate(720deg)`, opacity: 0 }
+                ], { duration: Math.random()*2000+1000, easing: 'cubic-bezier(0,1,1,1)' });
+                anim.onfinish = () => p.remove();
             }
         }
 
-        function playWin() { sWin.currentTime = 0; sWin.play(); }
-        function playLose() { sLose.currentTime = 0; sLose.play(); }
+        // --- TWITCH LIVE CHECKER (Имитация) ---
+        function updateTwitchStatus() {
+            const card = document.getElementById('twitch-card');
+            const text = document.getElementById('tw-text');
+            // Здесь можно вставить реальный API запрос, но для эффекта сделаем рандом
+            const isLive = Math.random() > 0.5; 
+            if(isLive) {
+                card.classList.add('is-live');
+                text.innerText = "ЗАХОДИ, Я В ЭФИРЕ!";
+            } else {
+                card.classList.remove('is-live');
+                text.innerText = "Стримы скоро будут";
+            }
+        }
+        setInterval(updateTwitchStatus, 60000); // Проверка раз в минуту
+        updateTwitchStatus();
+
+        // --- МУЗЫКА ---
+        const music = document.getElementById('bg-music');
+        let started = false;
+        function startFirstTime() { if(!started) { music.volume = 0.3; music.play(); started = true; } }
+        function togglePlay() { 
+            if(music.paused) { music.play(); document.getElementById('play-pause').innerText = "⏸"; document.getElementById('eq').classList.remove('paused'); }
+            else { music.pause(); document.getElementById('play-pause').innerText = "▶"; document.getElementById('eq').classList.add('paused'); }
+        }
+        function changeVol(v) { music.volume = v; }
+        function playEff(id) { const s = document.getElementById(id); s.currentTime = 0; s.play(); }
 
         // --- КАЗИНО ---
-        const skins = [
-            {n: "Common BZZ", c: "#b0c3d9"}, {n: "Rare Blade", c: "#4b69ff"},
-            {n: "Mythical Axe", c: "#8847ff"}, {n: "Legendary Bow", c: "#d32ce6"},
-            {n: "ARCANA SF", c: "#ade55c"}, {n: "DC HOOK", c: "#eb4b4b"}
-        ];
-
-        function updateTimer() {
-            const lastSpin = localStorage.getItem('lastSpin');
-            const btn = document.getElementById('spin-btn');
-            const timerText = document.getElementById('timer-text');
-            if (lastSpin) {
-                const timeLeft = 30 * 60 * 1000 - (Date.now() - lastSpin);
-                if (timeLeft > 0) {
-                    btn.disabled = true;
-                    const m = Math.floor(timeLeft/60000);
-                    const s = Math.floor((timeLeft%60000)/1000);
-                    timerText.innerText = `Доступно через: ${m}м ${s}с`;
-                    return;
-                }
-            }
-            btn.disabled = false;
-            timerText.innerText = "Кейс готов к открытию!";
-        }
-
+        const skins = [{n: "BZZ", c: "#b0c3d9"}, {n: "Hook", c: "#eb4b4b"}, {n: "Arcana", c: "#ade55c"}];
         function spinCase() {
             const strip = document.getElementById('case-strip');
             localStorage.setItem('lastSpin', Date.now());
@@ -215,159 +259,89 @@
                 const s = skins[Math.floor(Math.random()*skins.length)];
                 const div = document.createElement('div');
                 div.className = 'skin-item';
-                div.style.borderBottomColor = s.c;
-                div.innerHTML = `<span style="color:${s.c}; font-size:20px;">★</span><br>${s.n}`;
+                div.style.borderBottom = `3px solid ${s.c}`;
+                div.innerHTML = `<span style="color:${s.c}">★</span><br>${s.n}`;
                 strip.appendChild(div);
             }
-            strip.style.transition = "none";
-            strip.style.transform = "translateX(0)";
-            
-            sSpin.loop = true;
-            sSpin.play(); // Звук кручения
-
+            strip.style.transition = "none"; strip.style.transform = "translateX(0)";
+            playEff('s-spin');
             setTimeout(() => {
-                strip.style.transition = "transform 4s cubic-bezier(0.15, 0, 0.15, 1)";
-                strip.style.transform = `translateX(-${2800 + Math.random() * 200}px)`;
+                strip.style.transition = "transform 4s cubic-bezier(0.1, 0, 0.1, 1)";
+                strip.style.transform = `translateX(-${2800 + Math.random()*200}px)`;
                 setTimeout(() => { 
-                    sSpin.pause();
-                    playWin(); // Звук выигрыша
+                    playEff('s-win'); spawnConfetti();
                     document.getElementById('claim-btn').style.display = "block"; 
                     updateTimer();
                 }, 4100);
             }, 50);
         }
-
-        function claimPrize() {
-            window.open("https://t.me/linoneee", "_blank");
-            document.getElementById('claim-btn').style.display = "none";
+        function claimPrize() { window.open("https://t.me/linoneee", "_blank"); }
+        function updateTimer() {
+            const last = localStorage.getItem('lastSpin');
+            const btn = document.getElementById('spin-btn');
+            if(last) {
+                const left = 30*60*1000 - (Date.now() - last);
+                if(left > 0) { btn.disabled = true; document.getElementById('timer-text').innerText = `Кейс: ${Math.floor(left/60000)}м`; return; }
+            }
+            btn.disabled = false;
         }
 
         // --- САПЕР ---
-        let minePositions = [];
-        let minesGameOver = false;
-
+        let mines = []; let mOver = false;
         function initMines() {
-            const board = document.getElementById('mines-board');
-            const msg = document.getElementById('mines-msg');
-            board.innerHTML = "";
-            msg.innerText = "";
-            minesGameOver = false;
-            minePositions = [];
-            let placed = 0;
-            while(placed < 3) {
-                let idx = Math.floor(Math.random()*25);
-                if(!minePositions.includes(idx)) { minePositions.push(idx); placed++; }
-            }
+            const b = document.getElementById('mines-board'); b.innerHTML = ""; mines = []; mOver = false;
+            document.getElementById('mines-msg').innerText = "";
+            let p = 0; while(p < 3) { let r = Math.floor(Math.random()*25); if(!mines.includes(r)) { mines.push(r); p++; } }
             for(let i=0; i<25; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.id = `mine-${i}`;
-                cell.onclick = () => revealMine(i);
-                board.appendChild(cell);
-            }
-        }
-
-        function revealMine(idx) {
-            if(minesGameOver) return;
-            const cell = document.getElementById(`mine-${idx}`);
-            if(cell.classList.contains('revealed')) return;
-
-            if(minePositions.includes(idx)) {
-                cell.classList.add('mine');
-                cell.innerText = "💣";
-                document.getElementById('mines-msg').innerText = "ПОТРАЧЕНО!";
-                minesGameOver = true;
-                playLose(); // Звук проигрыша
-                return;
-            }
-
-            let count = 0;
-            const x = idx % 5;
-            const y = Math.floor(idx / 5);
-            for(let i=-1; i<=1; i++) {
-                for(let j=-1; j<=1; j++) {
-                    let nx = x + i, ny = y + j;
-                    if(nx >= 0 && nx < 5 && ny >= 0 && ny < 5) {
-                        if(minePositions.includes(ny * 5 + nx)) count++;
-                    }
-                }
-            }
-
-            cell.classList.add('revealed');
-            if(count > 0) {
-                cell.innerText = count;
-                cell.classList.add(`n${count}`);
-            } else {
-                cell.innerText = "🕷️";
-                for(let i=-1; i<=1; i++) {
-                    for(let j=-1; j<=1; j++) {
-                        let nx = x + i, ny = y + j;
-                        if(nx >= 0 && nx < 5 && ny >= 0 && ny < 5) revealMine(ny * 5 + nx);
-                    }
-                }
-            }
-        }
-
-        // --- КРЕСТИКИ НОЛИКИ ---
-        let tttState = ["","","","","","","","",""];
-        let tttIsActive = true;
-
-        function resetTTT() {
-            tttState = ["","","","","","","","",""];
-            tttIsActive = true;
-            document.getElementById('ttt-status').innerText = "Ваш ход (X)";
-            renderTTT();
-        }
-
-        function checkWinner(st) {
-            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for(let w of wins) {
-                if(st[w[0]] && st[w[0]]===st[w[1]] && st[w[0]]===st[w[2]]) return st[w[0]];
-            }
-            return st.includes("") ? null : "Ничья";
-        }
-
-        function renderTTT() {
-            const board = document.getElementById('ttt-board');
-            board.innerHTML = "";
-            tttState.forEach((val, i) => {
-                const d = document.createElement('div');
-                d.className = 'ttt-cell';
-                d.innerText = val;
-                d.onclick = () => {
-                    if(tttIsActive && tttState[i]==="") {
-                        tttState[i] = "X";
-                        renderTTT();
-                        let res = checkWinner(tttState);
-                        if(res) { endTTT(res); } 
-                        else {
-                            tttIsActive = false;
-                            document.getElementById('ttt-status').innerText = "Бот думает...";
-                            setTimeout(botMove, 600);
-                        }
+                const c = document.createElement('div'); c.className = 'cell';
+                c.onclick = () => {
+                    if(mOver || c.classList.contains('revealed')) return;
+                    if(mines.includes(i)) {
+                        c.classList.add('mine'); c.innerText = "💣";
+                        document.getElementById('mines-msg').innerText = "ПОТРАЧЕНО!";
+                        mOver = true; playEff('s-lose');
+                    } else {
+                        c.classList.add('revealed');
+                        let count = 0; [i-6,i-5,i-4,i-1,i+1,i+4,i+5,i+6].forEach(pos => { if(mines.includes(pos)) count++; });
+                        c.innerText = count > 0 ? count : "🕷️";
+                        if(document.querySelectorAll('.cell.revealed').length === 22) { spawnConfetti(); playEff('s-win'); }
                     }
                 };
-                board.appendChild(d);
-            });
-        }
-
-        function botMove() {
-            let empty = tttState.map((v,i) => v===""?i:null).filter(x=>x!==null);
-            if(empty.length > 0) {
-                tttState[empty[Math.floor(Math.random()*empty.length)]] = "O";
-                renderTTT();
-                let res = checkWinner(tttState);
-                if(res) endTTT(res);
-                else { tttIsActive = true; document.getElementById('ttt-status').innerText = "Ваш ход (X)"; }
+                b.appendChild(c);
             }
         }
 
-        function endTTT(res) {
-            tttIsActive = false;
-            const s = document.getElementById('ttt-status');
-            if(res === "X") { s.innerText = "ВЫ ВЫИГРАЛИ!"; playWin(); }
-            else if(res === "O") { s.innerText = "БОТ ВЫИГРАЛ!"; playLose(); }
-            else s.innerText = "НИЧЬЯ!";
+        // --- КРЕСТИКИ ---
+        let ttt = ["","","","","","","","",""]; let tActive = true;
+        function resetTTT() { ttt = ["","","","","","","","",""]; tActive = true; renderTTT(); }
+        function renderTTT() {
+            const b = document.getElementById('ttt-board'); b.innerHTML = "";
+            ttt.forEach((v, i) => {
+                const d = document.createElement('div'); d.className = 'ttt-cell'; d.innerText = v;
+                d.onclick = () => {
+                    if(tActive && ttt[i]==="") { ttt[i]="X"; renderTTT();
+                        if(checkW(ttt)) endT(checkW(ttt));
+                        else { tActive=false; setTimeout(bot, 600); }
+                    }
+                };
+                b.appendChild(d);
+            });
+        }
+        function bot() {
+            let e = ttt.map((v,i)=>v===""?i:null).filter(x=>x!==null);
+            if(e.length) ttt[e[Math.floor(Math.random()*e.length)]] = "O";
+            renderTTT(); if(checkW(ttt)) endT(checkW(ttt)); else tActive = true;
+        }
+        function checkW(s) {
+            const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for(let l of w) if(s[l[0]] && s[l[0]]===s[l[1]] && s[l[0]]===s[l[2]]) return s[l[0]];
+            return s.includes("") ? null : "D";
+        }
+        function endT(r) {
+            tActive = false; const st = document.getElementById('ttt-status');
+            if(r==="X") { st.innerText="WIN!"; playEff('s-win'); spawnConfetti(); }
+            else if(r==="O") { st.innerText="LOSE!"; playEff('s-lose'); }
+            else st.innerText="DRAW!";
         }
 
         setInterval(updateTimer, 1000);
